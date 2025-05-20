@@ -1,13 +1,25 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, useScroll, useTransform } from "framer-motion"
+import { useRef } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { GraduationCap, Briefcase, Award } from "lucide-react"
 
 export default function About() {
+  const ref = useRef(null)
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  })
+
+  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [0, 1, 0])
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1, 0.8])
+
   return (
-    <section id="about" className="py-20 bg-muted/30">
+    <section id="about" ref={ref} className="py-20 bg-muted/30 relative overflow-hidden">
+      <div className="absolute inset-0 dot-pattern opacity-30 -z-10"></div>
+
       <div className="container max-w-5xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -16,11 +28,11 @@ export default function About() {
           viewport={{ once: true }}
           className="flex flex-col items-center text-center mb-12"
         >
-          <Badge variant="outline" className="mb-2">
+          <Badge variant="outline" className="mb-2 animated-border">
             About Me
           </Badge>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Who I Am</h2>
-          <div className="w-20 h-0.5 bg-primary/20 rounded mb-6"></div>
+          <div className="w-20 h-0.5 bg-accent/50 rounded mb-6"></div>
           <p className="max-w-2xl text-muted-foreground">
             I am a Sistem Informasi student at Universitas Singaperbangsa Karawang with a passion for Website
             Development. I successfully graduated from Dicoding Indonesia as a Certified Independent Study Student in
@@ -28,18 +40,18 @@ export default function About() {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-6 mt-12">
+        <motion.div style={{ opacity, scale }} className="grid md:grid-cols-3 gap-6 mt-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
             viewport={{ once: true }}
           >
-            <Card className="h-full subtle-shadow subtle-shadow-hover">
+            <Card className="h-full creative-card border-0">
               <CardContent className="pt-6">
                 <div className="flex flex-col items-center text-center">
-                  <div className="w-16 h-16 rounded-full bg-primary/5 flex items-center justify-center mb-4">
-                    <GraduationCap className="h-8 w-8 text-primary" />
+                  <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mb-4">
+                    <GraduationCap className="h-8 w-8 text-accent" />
                   </div>
                   <h3 className="text-xl font-semibold mb-2">Education</h3>
                   <p className="text-muted-foreground">
@@ -57,11 +69,11 @@ export default function About() {
             transition={{ duration: 0.5, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            <Card className="h-full subtle-shadow subtle-shadow-hover">
+            <Card className="h-full creative-card border-0">
               <CardContent className="pt-6">
                 <div className="flex flex-col items-center text-center">
-                  <div className="w-16 h-16 rounded-full bg-primary/5 flex items-center justify-center mb-4">
-                    <Briefcase className="h-8 w-8 text-primary" />
+                  <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mb-4">
+                    <Briefcase className="h-8 w-8 text-accent" />
                   </div>
                   <h3 className="text-xl font-semibold mb-2">Experience</h3>
                   <p className="text-muted-foreground">
@@ -79,11 +91,11 @@ export default function About() {
             transition={{ duration: 0.5, delay: 0.3 }}
             viewport={{ once: true }}
           >
-            <Card className="h-full subtle-shadow subtle-shadow-hover">
+            <Card className="h-full creative-card border-0">
               <CardContent className="pt-6">
                 <div className="flex flex-col items-center text-center">
-                  <div className="w-16 h-16 rounded-full bg-primary/5 flex items-center justify-center mb-4">
-                    <Award className="h-8 w-8 text-primary" />
+                  <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mb-4">
+                    <Award className="h-8 w-8 text-accent" />
                   </div>
                   <h3 className="text-xl font-semibold mb-2">Leadership</h3>
                   <p className="text-muted-foreground">
@@ -94,7 +106,7 @@ export default function About() {
               </CardContent>
             </Card>
           </motion.div>
-        </div>
+        </motion.div>
       </div>
     </section>
   )

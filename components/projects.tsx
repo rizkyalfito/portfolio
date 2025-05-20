@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { motion } from "framer-motion"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -61,8 +62,12 @@ const projects = [
 ]
 
 export default function Projects() {
+  const [hoveredProject, setHoveredProject] = useState(null)
+
   return (
-    <section id="projects" className="py-20 bg-muted/30">
+    <section id="projects" className="py-20 bg-muted/30 relative overflow-hidden">
+      <div className="absolute inset-0 diagonal-pattern opacity-30 -z-10"></div>
+
       <div className="container max-w-5xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -71,11 +76,11 @@ export default function Projects() {
           viewport={{ once: true }}
           className="flex flex-col items-center text-center mb-12"
         >
-          <Badge variant="outline" className="mb-2">
+          <Badge variant="outline" className="mb-2 animated-border">
             Projects
           </Badge>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">My Work</h2>
-          <div className="w-20 h-0.5 bg-primary/20 rounded mb-6"></div>
+          <div className="w-20 h-0.5 bg-accent/50 rounded mb-6"></div>
           <p className="max-w-2xl text-muted-foreground">
             A showcase of my projects and applications I've built throughout my journey as a developer.
           </p>
@@ -89,8 +94,14 @@ export default function Projects() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
+              onMouseEnter={() => setHoveredProject(project.id)}
+              onMouseLeave={() => setHoveredProject(null)}
             >
-              <Card className="h-full flex flex-col overflow-hidden group subtle-shadow subtle-shadow-hover">
+              <Card
+                className={`h-full flex flex-col overflow-hidden creative-card border-0 ${
+                  hoveredProject === project.id ? "ring-1 ring-accent/50" : ""
+                }`}
+              >
                 <div className="relative overflow-hidden h-48">
                   <Image
                     src={project.image || "/placeholder.svg"}
@@ -99,7 +110,7 @@ export default function Projects() {
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                   <div className="absolute top-2 right-2">
-                    <Badge variant="secondary">{project.year}</Badge>
+                    <Badge className="bg-accent/80 text-accent-foreground">{project.year}</Badge>
                   </div>
                 </div>
                 <CardHeader>
@@ -108,20 +119,20 @@ export default function Projects() {
                 </CardHeader>
                 <CardContent className="flex flex-wrap gap-2 mt-auto">
                   {project.tags.map((tag) => (
-                    <Badge key={tag} variant="outline">
+                    <Badge key={tag} variant="outline" className="skill-tag">
                       {tag}
                     </Badge>
                   ))}
                 </CardContent>
                 <CardFooter className="flex gap-2">
-                  <Button variant="outline" size="sm" asChild>
+                  <Button variant="outline" size="sm" asChild className="animated-border">
                     <a href={project.github} target="_blank" rel="noopener noreferrer">
                       <Github className="h-4 w-4 mr-2" />
                       Code
                     </a>
                   </Button>
                   {project.demo && (
-                    <Button size="sm" asChild>
+                    <Button size="sm" asChild className="bg-accent hover:bg-accent/90 text-accent-foreground">
                       <a href={project.demo} target="_blank" rel="noopener noreferrer">
                         <ExternalLink className="h-4 w-4 mr-2" />
                         Demo

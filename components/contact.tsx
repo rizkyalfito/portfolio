@@ -21,6 +21,7 @@ export default function Contact() {
     message: "",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [focusedField, setFocusedField] = useState(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -48,7 +49,9 @@ export default function Contact() {
   }
 
   return (
-    <section id="contact" className="py-20 bg-muted/30">
+    <section id="contact" className="py-20 bg-muted/30 relative overflow-hidden clip-path-wave">
+      <div className="absolute inset-0 diagonal-pattern opacity-30 -z-10"></div>
+
       <div className="container max-w-5xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -57,11 +60,11 @@ export default function Contact() {
           viewport={{ once: true }}
           className="flex flex-col items-center text-center mb-12"
         >
-          <Badge variant="outline" className="mb-2">
+          <Badge variant="outline" className="mb-2 animated-border">
             Contact
           </Badge>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Get In Touch</h2>
-          <div className="w-20 h-0.5 bg-primary/20 rounded mb-6"></div>
+          <div className="w-20 h-0.5 bg-accent/50 rounded mb-6"></div>
           <p className="max-w-2xl text-muted-foreground">
             Feel free to reach out to me for any questions, opportunities, or just to say hello!
           </p>
@@ -74,20 +77,20 @@ export default function Contact() {
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
-            <Card className="h-full subtle-shadow subtle-shadow-hover">
+            <Card className="h-full creative-card border-0">
               <CardContent className="pt-6">
                 <h3 className="text-xl font-semibold mb-6">Contact Information</h3>
 
-                <div className="space-y-6">
+                <div className="space-y-6 staggered-animation">
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center shrink-0">
-                      <Mail className="h-5 w-5 text-primary" />
+                    <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
+                      <Mail className="h-5 w-5 text-accent" />
                     </div>
                     <div>
                       <h4 className="font-medium">Email</h4>
                       <a
                         href="mailto:ikyalf21@gmail.com"
-                        className="text-muted-foreground hover:text-primary transition-colors"
+                        className="text-muted-foreground hover:text-accent transition-colors animated-border"
                       >
                         ikyalf21@gmail.com
                       </a>
@@ -95,14 +98,14 @@ export default function Contact() {
                   </div>
 
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center shrink-0">
-                      <Phone className="h-5 w-5 text-primary" />
+                    <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
+                      <Phone className="h-5 w-5 text-accent" />
                     </div>
                     <div>
                       <h4 className="font-medium">Phone</h4>
                       <a
                         href="tel:+6285695761374"
-                        className="text-muted-foreground hover:text-primary transition-colors"
+                        className="text-muted-foreground hover:text-accent transition-colors animated-border"
                       >
                         +62 856 9576 1374
                       </a>
@@ -110,8 +113,8 @@ export default function Contact() {
                   </div>
 
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center shrink-0">
-                      <MapPin className="h-5 w-5 text-primary" />
+                    <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
+                      <MapPin className="h-5 w-5 text-accent" />
                     </div>
                     <div>
                       <h4 className="font-medium">Location</h4>
@@ -120,8 +123,8 @@ export default function Contact() {
                   </div>
 
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center shrink-0">
-                      <Linkedin className="h-5 w-5 text-primary" />
+                    <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
+                      <Linkedin className="h-5 w-5 text-accent" />
                     </div>
                     <div>
                       <h4 className="font-medium">LinkedIn</h4>
@@ -129,7 +132,7 @@ export default function Contact() {
                         href="https://linkedin.com/in/rizkyalfito"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-muted-foreground hover:text-primary transition-colors"
+                        className="text-muted-foreground hover:text-accent transition-colors animated-border"
                       >
                         linkedin.com/in/rizkyalfito
                       </a>
@@ -137,8 +140,8 @@ export default function Contact() {
                   </div>
 
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center shrink-0">
-                      <Github className="h-5 w-5 text-primary" />
+                    <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
+                      <Github className="h-5 w-5 text-accent" />
                     </div>
                     <div>
                       <h4 className="font-medium">GitHub</h4>
@@ -146,7 +149,7 @@ export default function Contact() {
                         href="https://github.com/rizkyalfito"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-muted-foreground hover:text-primary transition-colors"
+                        className="text-muted-foreground hover:text-accent transition-colors animated-border"
                       >
                         github.com/rizkyalfito
                       </a>
@@ -163,7 +166,7 @@ export default function Contact() {
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
-            <Card className="h-full subtle-shadow subtle-shadow-hover">
+            <Card className="h-full creative-card border-0">
               <CardContent className="pt-6">
                 <h3 className="text-xl font-semibold mb-6">Send Me a Message</h3>
 
@@ -176,7 +179,10 @@ export default function Contact() {
                       placeholder="Your name"
                       value={formData.name}
                       onChange={handleChange}
+                      onFocus={() => setFocusedField("name")}
+                      onBlur={() => setFocusedField(null)}
                       required
+                      className={`transition-all duration-300 ${focusedField === "name" ? "ring-1 ring-accent" : ""}`}
                     />
                   </div>
 
@@ -189,7 +195,10 @@ export default function Contact() {
                       placeholder="Your email"
                       value={formData.email}
                       onChange={handleChange}
+                      onFocus={() => setFocusedField("email")}
+                      onBlur={() => setFocusedField(null)}
                       required
+                      className={`transition-all duration-300 ${focusedField === "email" ? "ring-1 ring-accent" : ""}`}
                     />
                   </div>
 
@@ -201,7 +210,12 @@ export default function Contact() {
                       placeholder="Subject"
                       value={formData.subject}
                       onChange={handleChange}
+                      onFocus={() => setFocusedField("subject")}
+                      onBlur={() => setFocusedField(null)}
                       required
+                      className={`transition-all duration-300 ${
+                        focusedField === "subject" ? "ring-1 ring-accent" : ""
+                      }`}
                     />
                   </div>
 
@@ -214,11 +228,20 @@ export default function Contact() {
                       rows={5}
                       value={formData.message}
                       onChange={handleChange}
+                      onFocus={() => setFocusedField("message")}
+                      onBlur={() => setFocusedField(null)}
                       required
+                      className={`transition-all duration-300 ${
+                        focusedField === "message" ? "ring-1 ring-accent" : ""
+                      }`}
                     />
                   </div>
 
-                  <Button type="submit" className="w-full" disabled={isSubmitting}>
+                  <Button
+                    type="submit"
+                    className="w-full bg-accent hover:bg-accent/90 text-accent-foreground"
+                    disabled={isSubmitting}
+                  >
                     {isSubmitting ? (
                       <>Sending...</>
                     ) : (

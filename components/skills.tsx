@@ -1,15 +1,16 @@
 "use client"
 
+import { useState } from "react"
 import { motion } from "framer-motion"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Code, Database, Layout, Server, Users } from "lucide-react"
+import { Code, Database, Layout, Server, Users, Star, Zap, Sparkles } from "lucide-react"
 
 // Frontend skills with projects and experience
 const frontendSkills = [
   {
     name: "HTML & CSS",
+    icon: <Layout className="h-5 w-5" />,
     projects: [
       {
         name: "Soulution Stress Checker",
@@ -23,6 +24,7 @@ const frontendSkills = [
   },
   {
     name: "JavaScript",
+    icon: <Code className="h-5 w-5" />,
     projects: [
       {
         name: "Restaurant Catalog PWA",
@@ -36,6 +38,7 @@ const frontendSkills = [
   },
   {
     name: "React & Next.js",
+    icon: <Zap className="h-5 w-5" />,
     projects: [
       {
         name: "Thesisprint.id",
@@ -49,6 +52,7 @@ const frontendSkills = [
   },
   {
     name: "UI/UX Design",
+    icon: <Sparkles className="h-5 w-5" />,
     projects: [
       {
         name: "UI/UX Design Workshop",
@@ -66,6 +70,7 @@ const frontendSkills = [
 const backendSkills = [
   {
     name: "Node.js & Express",
+    icon: <Server className="h-5 w-5" />,
     projects: [
       {
         name: "Back-End Certification",
@@ -79,6 +84,7 @@ const backendSkills = [
   },
   {
     name: "PHP & CodeIgniter",
+    icon: <Code className="h-5 w-5" />,
     projects: [
       {
         name: "Inventory Management System",
@@ -96,6 +102,7 @@ const backendSkills = [
 const databaseSkills = [
   {
     name: "MySQL",
+    icon: <Database className="h-5 w-5" />,
     projects: [
       {
         name: "Library Information System",
@@ -109,6 +116,7 @@ const databaseSkills = [
   },
   {
     name: "Database Design",
+    icon: <Database className="h-5 w-5" />,
     projects: [
       {
         name: "UML Projects",
@@ -126,6 +134,7 @@ const databaseSkills = [
 const toolsSkills = [
   {
     name: "Git & GitHub",
+    icon: <Code className="h-5 w-5" />,
     projects: [
       {
         name: "Capstone Project",
@@ -139,6 +148,7 @@ const toolsSkills = [
   },
   {
     name: "Design Tools",
+    icon: <Sparkles className="h-5 w-5" />,
     projects: [
       {
         name: "Social Media Content",
@@ -156,6 +166,7 @@ const toolsSkills = [
 const softSkills = [
   {
     name: "Leadership",
+    icon: <Users className="h-5 w-5" />,
     evidence: [
       {
         role: "Head of Education Division",
@@ -169,6 +180,7 @@ const softSkills = [
   },
   {
     name: "Communication",
+    icon: <Users className="h-5 w-5" />,
     evidence: [
       {
         role: "Webinar Presenter",
@@ -182,6 +194,7 @@ const softSkills = [
   },
   {
     name: "Project Management",
+    icon: <Users className="h-5 w-5" />,
     evidence: [
       {
         role: "Project Lead",
@@ -195,17 +208,21 @@ const softSkills = [
   },
 ]
 
-const SkillCard = ({ skill, type = "technical" }) => {
+const SkillCard = ({ skill, type = "technical", isActive = false }) => {
   return (
-    <Card className="h-full hover:border-primary/20 transition-colors duration-300 subtle-shadow subtle-shadow-hover">
+    <Card className={`h-full creative-card border-0 ${isActive ? "ring-1 ring-accent/50" : ""}`}>
       <CardContent className="p-6">
-        <h3 className="text-lg font-medium mb-4">{skill.name}</h3>
-        <div className="space-y-3">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">{skill.icon}</div>
+          <h3 className="text-lg font-medium">{skill.name}</h3>
+        </div>
+
+        <div className="space-y-4">
           {type === "technical" &&
             skill.projects.map((project, index) => (
-              <div key={index} className="space-y-1">
+              <div key={index} className="space-y-1 creative-border pl-3">
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="font-normal">
+                  <Badge variant="outline" className="font-normal skill-tag">
                     {project.name}
                   </Badge>
                 </div>
@@ -215,9 +232,9 @@ const SkillCard = ({ skill, type = "technical" }) => {
 
           {type === "soft" &&
             skill.evidence.map((item, index) => (
-              <div key={index} className="space-y-1">
+              <div key={index} className="space-y-1 creative-border pl-3">
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="font-normal">
+                  <Badge variant="outline" className="font-normal skill-tag">
                     {item.role}
                   </Badge>
                 </div>
@@ -231,8 +248,38 @@ const SkillCard = ({ skill, type = "technical" }) => {
 }
 
 export default function Skills() {
+  const [activeCategory, setActiveCategory] = useState("frontend")
+  const [hoveredSkill, setHoveredSkill] = useState(null)
+
+  const categories = [
+    { id: "frontend", label: "Frontend", icon: <Layout className="h-4 w-4" /> },
+    { id: "backend", label: "Backend", icon: <Server className="h-4 w-4" /> },
+    { id: "database", label: "Database", icon: <Database className="h-4 w-4" /> },
+    { id: "tools", label: "Tools", icon: <Code className="h-4 w-4" /> },
+    { id: "soft", label: "Soft Skills", icon: <Users className="h-4 w-4" /> },
+  ]
+
+  const getSkills = () => {
+    switch (activeCategory) {
+      case "frontend":
+        return frontendSkills
+      case "backend":
+        return backendSkills
+      case "database":
+        return databaseSkills
+      case "tools":
+        return toolsSkills
+      case "soft":
+        return softSkills
+      default:
+        return []
+    }
+  }
+
   return (
-    <section id="skills" className="py-20">
+    <section id="skills" className="py-20 relative overflow-hidden">
+      <div className="absolute inset-0 dot-pattern opacity-50 -z-10"></div>
+
       <div className="container max-w-5xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -241,121 +288,59 @@ export default function Skills() {
           viewport={{ once: true }}
           className="flex flex-col items-center text-center mb-12"
         >
-          <Badge variant="outline" className="mb-2">
+          <Badge variant="outline" className="mb-2 animated-border">
             Skills
           </Badge>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">My Expertise</h2>
-          <div className="w-20 h-0.5 bg-primary/20 rounded mb-6"></div>
+          <div className="w-20 h-0.5 bg-accent/50 rounded mb-6"></div>
           <p className="max-w-2xl text-muted-foreground">
             A showcase of my skills through real projects and experiences, demonstrating practical application rather
             than abstract metrics.
           </p>
         </motion.div>
 
-        <Tabs defaultValue="frontend" className="w-full">
-          <TabsList className="grid w-full grid-cols-5 mb-8">
-            <TabsTrigger value="frontend" className="flex items-center gap-2">
-              <Layout className="h-4 w-4" />
-              <span className="hidden sm:inline">Frontend</span>
-            </TabsTrigger>
-            <TabsTrigger value="backend" className="flex items-center gap-2">
-              <Server className="h-4 w-4" />
-              <span className="hidden sm:inline">Backend</span>
-            </TabsTrigger>
-            <TabsTrigger value="database" className="flex items-center gap-2">
-              <Database className="h-4 w-4" />
-              <span className="hidden sm:inline">Database</span>
-            </TabsTrigger>
-            <TabsTrigger value="tools" className="flex items-center gap-2">
-              <Code className="h-4 w-4" />
-              <span className="hidden sm:inline">Tools</span>
-            </TabsTrigger>
-            <TabsTrigger value="soft" className="flex items-center gap-2">
-              <Users className="h-4 w-4" />
-              <span className="hidden sm:inline">Soft Skills</span>
-            </TabsTrigger>
-          </TabsList>
+        <div className="flex flex-wrap justify-center gap-2 mb-10">
+          {categories.map((category) => (
+            <button
+              key={category.id}
+              onClick={() => setActiveCategory(category.id)}
+              className={`px-4 py-2 rounded-full flex items-center gap-2 transition-all ${
+                activeCategory === category.id
+                  ? "bg-accent text-accent-foreground"
+                  : "bg-secondary hover:bg-secondary/80"
+              }`}
+            >
+              {category.icon}
+              <span className="hidden sm:inline">{category.label}</span>
+            </button>
+          ))}
+        </div>
 
-          <TabsContent value="frontend">
-            <div className="grid md:grid-cols-2 gap-6">
-              {frontendSkills.map((skill, index) => (
-                <motion.div
-                  key={skill.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                >
-                  <SkillCard skill={skill} />
-                </motion.div>
-              ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="backend">
-            <div className="grid md:grid-cols-2 gap-6">
-              {backendSkills.map((skill, index) => (
-                <motion.div
-                  key={skill.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                >
-                  <SkillCard skill={skill} />
-                </motion.div>
-              ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="database">
-            <div className="grid md:grid-cols-2 gap-6">
-              {databaseSkills.map((skill, index) => (
-                <motion.div
-                  key={skill.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                >
-                  <SkillCard skill={skill} />
-                </motion.div>
-              ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="tools">
-            <div className="grid md:grid-cols-2 gap-6">
-              {toolsSkills.map((skill, index) => (
-                <motion.div
-                  key={skill.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                >
-                  <SkillCard skill={skill} />
-                </motion.div>
-              ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="soft">
-            <div className="grid md:grid-cols-2 gap-6">
-              {softSkills.map((skill, index) => (
-                <motion.div
-                  key={skill.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                >
-                  <SkillCard skill={skill} type="soft" />
-                </motion.div>
-              ))}
-            </div>
-          </TabsContent>
-        </Tabs>
+        <motion.div
+          key={activeCategory}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3 }}
+          className="grid md:grid-cols-2 gap-6"
+        >
+          {getSkills().map((skill, index) => (
+            <motion.div
+              key={skill.name}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.1 }}
+              onMouseEnter={() => setHoveredSkill(skill.name)}
+              onMouseLeave={() => setHoveredSkill(null)}
+            >
+              <SkillCard
+                skill={skill}
+                type={activeCategory === "soft" ? "soft" : "technical"}
+                isActive={hoveredSkill === skill.name}
+              />
+            </motion.div>
+          ))}
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -365,22 +350,37 @@ export default function Skills() {
           className="mt-16"
         >
           <h3 className="text-2xl font-bold mb-6 text-center">Certifications</h3>
-          <div className="grid md:grid-cols-3 gap-4">
-            <Card className="subtle-shadow subtle-shadow-hover">
+          <div className="grid md:grid-cols-3 gap-6">
+            <Card className="creative-card border-0">
               <CardContent className="p-6">
-                <h4 className="font-medium">Front-End Web Developer Expert</h4>
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center">
+                    <Star className="h-4 w-4 text-accent" />
+                  </div>
+                  <h4 className="font-medium">Front-End Web Developer Expert</h4>
+                </div>
                 <p className="text-sm text-muted-foreground mt-1">Dicoding Indonesia (2023)</p>
               </CardContent>
             </Card>
-            <Card className="subtle-shadow subtle-shadow-hover">
+            <Card className="creative-card border-0">
               <CardContent className="p-6">
-                <h4 className="font-medium">Git with GitHub</h4>
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center">
+                    <Star className="h-4 w-4 text-accent" />
+                  </div>
+                  <h4 className="font-medium">Git with GitHub</h4>
+                </div>
                 <p className="text-sm text-muted-foreground mt-1">Dicoding Indonesia (2023)</p>
               </CardContent>
             </Card>
-            <Card className="subtle-shadow subtle-shadow-hover">
+            <Card className="creative-card border-0">
               <CardContent className="p-6">
-                <h4 className="font-medium">Back-End App for Beginners</h4>
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center">
+                    <Star className="h-4 w-4 text-accent" />
+                  </div>
+                  <h4 className="font-medium">Back-End App for Beginners</h4>
+                </div>
                 <p className="text-sm text-muted-foreground mt-1">Dicoding Indonesia (2023)</p>
               </CardContent>
             </Card>

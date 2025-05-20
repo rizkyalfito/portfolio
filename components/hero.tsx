@@ -1,14 +1,23 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
-import { motion } from "framer-motion"
+import { motion, useScroll, useTransform } from "framer-motion"
 import { ArrowRight, Download, Github, Linkedin, Mail } from "lucide-react"
 import Link from "next/link"
 import { TypeAnimation } from "react-type-animation"
 
 export default function Hero() {
   const [scrollY, setScrollY] = useState(0)
+  const ref = useRef(null)
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"],
+  })
+
+  const opacity = useTransform(scrollYProgress, [0, 1], [1, 0])
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.8])
+  const y = useTransform(scrollYProgress, [0, 1], [0, 100])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,23 +29,25 @@ export default function Hero() {
   }, [])
 
   return (
-    <section className="relative h-screen flex items-center justify-center overflow-hidden">
-      <div
-        className="absolute inset-0 bg-gradient-to-b from-background to-background/50 z-10"
-        style={{
-          opacity: Math.min(scrollY / 500, 0.6),
-        }}
-      />
+    <section ref={ref} className="relative h-screen flex items-center justify-center overflow-hidden">
+      <div className="absolute inset-0 diagonal-pattern opacity-30 -z-10"></div>
 
-      <div className="grid lg:grid-cols-2 gap-8 items-center container z-20">
+      <motion.div
+        style={{ opacity, scale, y }}
+        className="grid lg:grid-cols-2 gap-8 items-center container max-w-5xl z-20"
+      >
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="flex flex-col gap-4"
         >
+          <div className="inline-block mb-2">
+            <Badge />
+          </div>
+
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-            Hi, I&apos;m <span className="text-primary">Rizky Alfito Hadi</span>
+            Hi, I&apos;m <span className="text-accent">Rizky Alfito Hadi</span>
           </h1>
 
           <div className="text-xl md:text-2xl font-medium text-muted-foreground h-16">
@@ -62,12 +73,12 @@ export default function Hero() {
           </p>
 
           <div className="flex flex-wrap gap-3 mt-2">
-            <Button asChild>
+            <Button asChild className="bg-accent hover:bg-accent/90 text-accent-foreground">
               <Link href="#contact">
                 Contact Me <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
-            <Button variant="outline" asChild>
+            <Button variant="outline" asChild className="animated-border">
               <a href="/Rizky_Alfito_Hadi_CV.pdf" download>
                 Download CV <Download className="ml-2 h-4 w-4" />
               </a>
@@ -75,19 +86,19 @@ export default function Hero() {
           </div>
 
           <div className="flex gap-4 mt-4">
-            <Button variant="ghost" size="icon" asChild className="rounded-full">
+            <Button variant="ghost" size="icon" asChild className="rounded-full hover:bg-accent/10">
               <a href="https://linkedin.com/in/rizkyalfito" target="_blank" rel="noopener noreferrer">
                 <Linkedin className="h-5 w-5" />
                 <span className="sr-only">LinkedIn</span>
               </a>
             </Button>
-            <Button variant="ghost" size="icon" asChild className="rounded-full">
+            <Button variant="ghost" size="icon" asChild className="rounded-full hover:bg-accent/10">
               <a href="https://github.com/rizkyalfito" target="_blank" rel="noopener noreferrer">
                 <Github className="h-5 w-5" />
                 <span className="sr-only">GitHub</span>
               </a>
             </Button>
-            <Button variant="ghost" size="icon" asChild className="rounded-full">
+            <Button variant="ghost" size="icon" asChild className="rounded-full hover:bg-accent/10">
               <a href="mailto:ikyalf21@gmail.com">
                 <Mail className="h-5 w-5" />
                 <span className="sr-only">Email</span>
@@ -102,26 +113,17 @@ export default function Hero() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="hidden lg:flex justify-center items-center"
         >
-          <div className="relative w-80 h-80">
-            <div className="absolute inset-0 rounded-full bg-primary/5 blur-3xl opacity-20" />
+          <div className="relative w-80 h-80 floating">
+            <div className="absolute inset-0 rounded-full bg-accent/10 blur-3xl opacity-20"></div>
+            <div className="absolute inset-0 rounded-full border border-accent/20"></div>
             <img
               src="/profile.png"
               alt="Rizky Alfito Hadi"
-              className="rounded-full object-cover border-4 border-primary/10 shadow-xl"
+              className="rounded-full object-cover border-4 border-accent/10 shadow-xl"
             />
           </div>
         </motion.div>
-      </div>
-
-      <div
-        className="absolute inset-0 -z-10"
-        style={{
-          backgroundImage: "radial-gradient(circle at center, rgba(0, 0, 0, 0.01) 0%, transparent 70%)",
-          backgroundSize: "100% 100%",
-          backgroundPosition: "center",
-          transform: `translateY(${scrollY * 0.5}px)`,
-        }}
-      />
+      </motion.div>
 
       <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-20 animate-bounce">
         <Button variant="ghost" size="sm" asChild className="rounded-full">
@@ -144,5 +146,17 @@ export default function Hero() {
         </Button>
       </div>
     </section>
+  )
+}
+
+function Badge() {
+  return (
+    <div className="px-3 py-1 text-xs font-medium rounded-full bg-accent/10 text-accent inline-flex items-center">
+      <span className="relative flex h-2 w-2 mr-2">
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+        <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
+      </span>
+      Available for hire
+    </div>
   )
 }
