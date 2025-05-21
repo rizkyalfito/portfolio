@@ -14,20 +14,20 @@ const projects = [
     title: "Soulution Stress Checker",
     description:
       "A web-based stress checker application using psychological PSS method to help users manage their stress levels.",
-    image: "/projects/stress-checker.png",
+    image: "/stress-checker.png",
     tags: ["NextJS", "Tailwind CSS", "JavaScript"],
     github: "https://github.com/rizkyalfito/soulution",
-    demo: "https://soulution.vercel.app",
+    demo: "https://nextjs-stress-checker.vercel.app/",
     year: "2023",
   },
   {
     id: 2,
     title: "Thesisprint.id",
     description: "A website for thesis printing services built with Next.js and modern UI components.",
-    image: "/projects/thesisprint.png",
+    image: "/thesisprint.png",
     tags: ["NextJS", "Tailwind CSS", "TypeScript"],
     github: "https://github.com/rizkyalfito/thesisprint",
-    demo: "https://thesisprint.vercel.app",
+    demo: "https://www.thesisprint.id/",
     year: "2024",
   },
   {
@@ -36,19 +36,19 @@ const projects = [
     description: "A progressive web app that showcases restaurant catalogs with data fetched from an API.",
     image: "/projects/restaurant.png",
     tags: ["JavaScript", "PWA", "HTML", "CSS"],
-    github: "https://github.com/rizkyalfito/restaurant-catalog",
+    github: "https://github.com/rizkyalfito/easter",
     demo: "https://restaurant-catalog-pwa.vercel.app",
     year: "2023",
   },
   {
     id: 4,
-    title: "Bookstore Website",
-    description: "A static website for a bookstore with a clean and user-friendly interface.",
-    image: "/projects/bookstore.png",
-    tags: ["HTML", "CSS", "JavaScript"],
-    github: "https://github.com/rizkyalfito/bookstore",
-    demo: "https://bookstore-static.vercel.app",
-    year: "2022",
+    title: "Jayakerta Website",
+    description: "A static website for a village when i was KKN",
+    image: "/jayakerta.png",
+    tags: ["HTML", "CSS", "JavaScript","React"],
+    github: "https://github.com/rizkyalfito/desa-jayakerta",
+    demo: "https://desa-jayakerta.vercel.app/",
+    year: "2024",
   },
   {
     id: 5,
@@ -125,19 +125,27 @@ export default function Projects() {
                   ))}
                 </CardContent>
                 <CardFooter className="flex gap-2">
-                  <Button variant="outline" size="sm" asChild className="animated-border">
-                    <a href={project.github} target="_blank" rel="noopener noreferrer">
+                  {project.github && (
+                    <a 
+                      href={project.github} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input hover:bg-accent/10 h-9 px-3 animated-border"
+                    >
                       <Github className="h-4 w-4 mr-2" />
                       Code
                     </a>
-                  </Button>
+                  )}
                   {project.demo && (
-                    <Button size="sm" asChild className="bg-accent hover:bg-accent/90 text-accent-foreground">
-                      <a href={project.demo} target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="h-4 w-4 mr-2" />
-                        Demo
-                      </a>
-                    </Button>
+                    <a 
+                      href={project.demo} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-accent hover:bg-accent/90 text-accent-foreground h-9 px-3"
+                    >
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      Demo
+                    </a>
                   )}
                 </CardFooter>
               </Card>

@@ -1,8 +1,7 @@
 "use client"
 
 import type React from "react"
-
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { motion } from "framer-motion"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -11,7 +10,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
-import { Github, Linkedin, Mail, MapPin, Phone, Send } from "lucide-react"
+import { Github, Linkedin, Mail, MapPin, Phone, Send, Paperclip } from "lucide-react"
+import { sendEmail } from "@/app/actions/send-email"
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -20,38 +20,89 @@ export default function Contact() {
     subject: "",
     message: "",
   })
+  const [attachment, setAttachment] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [focusedField, setFocusedField] = useState(null)
+  const fileInputRef = useRef(null)
+  const formRef = useRef(null)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e) => {
     const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }))
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0]
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Please select a file smaller than 5MB",
+          variant: "destructive",
+        })
+        return
+      }
+      setAttachment(file)
+    }
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setIsSubmitting(true)
 
-    // Simulate form submission
-    setTimeout(() => {
+    try {
+      if (!formRef.current) return
+
+      const formDataObj = new FormData(formRef.current)
+
+      // Add the file if it exists
+      if (attachment) {
+        formDataObj.set("attachment", attachment)
+      }
+
+      const result = await sendEmail(formDataObj)
+
+      if (result.success) {
+        toast({
+          title: "Message sent!",
+          description: "Thank you for your message. I'll get back to you soon.",
+        })
+
+        // Reset form
+        setFormData({
+          name: "",
+          email: "",
+          subject: "",
+          message: "",
+        })
+        setAttachment(null)
+        if (fileInputRef.current) {
+          fileInputRef.current.value = ""
+        }
+      } else {
+        toast({
+          title: "Error",
+          description: result.message || "Something went wrong. Please try again.",
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
       toast({
-        title: "Message sent!",
-        description: "Thank you for your message. I'll get back to you soon.",
+        title: "Error",
+        description: "Failed to send message. Please try again later.",
+        variant: "destructive",
       })
-      setFormData({
-        name: "",
-        email: "",
-        subject: "",
-        message: "",
-      })
+      console.error(error)
+    } finally {
       setIsSubmitting(false)
-    }, 1500)
+    }
   }
 
   return (
-    <section id="contact" className="py-20 bg-muted/30 relative overflow-hidden clip-path-wave">
-      <div className="absolute inset-0 diagonal-pattern opacity-30 -z-10"></div>
-
+    <section id="contact" className="py-20 bg-muted/30 relative">
       <div className="container max-w-5xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -60,7 +111,7 @@ export default function Contact() {
           viewport={{ once: true }}
           className="flex flex-col items-center text-center mb-12"
         >
-          <Badge variant="outline" className="mb-2 animated-border">
+          <Badge variant="outline" className="mb-2">
             Contact
           </Badge>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Get In Touch</h2>
@@ -77,11 +128,11 @@ export default function Contact() {
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
-            <Card className="h-full creative-card border-0">
+            <Card className="h-full">
               <CardContent className="pt-6">
                 <h3 className="text-xl font-semibold mb-6">Contact Information</h3>
 
-                <div className="space-y-6 staggered-animation">
+                <div className="space-y-6">
                   <div className="flex items-start gap-4">
                     <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
                       <Mail className="h-5 w-5 text-accent" />
@@ -90,7 +141,7 @@ export default function Contact() {
                       <h4 className="font-medium">Email</h4>
                       <a
                         href="mailto:ikyalf21@gmail.com"
-                        className="text-muted-foreground hover:text-accent transition-colors animated-border"
+                        className="text-muted-foreground hover:text-accent transition-colors"
                       >
                         ikyalf21@gmail.com
                       </a>
@@ -105,7 +156,7 @@ export default function Contact() {
                       <h4 className="font-medium">Phone</h4>
                       <a
                         href="tel:+6285695761374"
-                        className="text-muted-foreground hover:text-accent transition-colors animated-border"
+                        className="text-muted-foreground hover:text-accent transition-colors"
                       >
                         +62 856 9576 1374
                       </a>
@@ -132,7 +183,7 @@ export default function Contact() {
                         href="https://linkedin.com/in/rizkyalfito"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-muted-foreground hover:text-accent transition-colors animated-border"
+                        className="text-muted-foreground hover:text-accent transition-colors"
                       >
                         linkedin.com/in/rizkyalfito
                       </a>
@@ -149,7 +200,7 @@ export default function Contact() {
                         href="https://github.com/rizkyalfito"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-muted-foreground hover:text-accent transition-colors animated-border"
+                        className="text-muted-foreground hover:text-accent transition-colors"
                       >
                         github.com/rizkyalfito
                       </a>
@@ -166,11 +217,11 @@ export default function Contact() {
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
-            <Card className="h-full creative-card border-0">
+            <Card className="h-full">
               <CardContent className="pt-6">
                 <h3 className="text-xl font-semibold mb-6">Send Me a Message</h3>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid gap-2">
                     <Label htmlFor="name">Name</Label>
                     <Input
@@ -182,7 +233,7 @@ export default function Contact() {
                       onFocus={() => setFocusedField("name")}
                       onBlur={() => setFocusedField(null)}
                       required
-                      className={`transition-all duration-300 ${focusedField === "name" ? "ring-1 ring-accent" : ""}`}
+                      style={{ pointerEvents: 'auto', cursor: 'text' }}
                     />
                   </div>
 
@@ -198,7 +249,7 @@ export default function Contact() {
                       onFocus={() => setFocusedField("email")}
                       onBlur={() => setFocusedField(null)}
                       required
-                      className={`transition-all duration-300 ${focusedField === "email" ? "ring-1 ring-accent" : ""}`}
+                      style={{ pointerEvents: 'auto', cursor: 'text' }}
                     />
                   </div>
 
@@ -213,9 +264,7 @@ export default function Contact() {
                       onFocus={() => setFocusedField("subject")}
                       onBlur={() => setFocusedField(null)}
                       required
-                      className={`transition-all duration-300 ${
-                        focusedField === "subject" ? "ring-1 ring-accent" : ""
-                      }`}
+                      style={{ pointerEvents: 'auto', cursor: 'text' }}
                     />
                   </div>
 
@@ -231,15 +280,40 @@ export default function Contact() {
                       onFocus={() => setFocusedField("message")}
                       onBlur={() => setFocusedField(null)}
                       required
-                      className={`transition-all duration-300 ${
-                        focusedField === "message" ? "ring-1 ring-accent" : ""
-                      }`}
+                      style={{ pointerEvents: 'auto', cursor: 'text' }}
                     />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="attachment">Attachment (optional)</Label>
+                    <div className="flex items-center gap-2">
+                      <Input
+                        ref={fileInputRef}
+                        id="attachment"
+                        name="attachment"
+                        type="file"
+                        onChange={handleFileChange}
+                        className="hidden"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="flex items-center gap-2 pointer-events-auto"
+                      >
+                        <Paperclip className="h-4 w-4" />
+                        {attachment ? "Change file" : "Attach file"}
+                      </Button>
+                      {attachment && (
+                        <span className="text-sm text-muted-foreground truncate max-w-[200px]">{attachment.name}</span>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground">Max file size: 5MB</p>
                   </div>
 
                   <Button
                     type="submit"
-                    className="w-full bg-accent hover:bg-accent/90 text-accent-foreground"
+                    className="w-full bg-accent hover:bg-accent/90 text-accent-foreground pointer-events-auto"
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? (

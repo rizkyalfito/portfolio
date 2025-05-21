@@ -79,7 +79,7 @@ export default function Hero() {
               </Link>
             </Button>
             <Button variant="outline" asChild className="animated-border">
-              <a href="/Rizky_Alfito_Hadi_CV.pdf" download>
+              <a href="/Rizky Alfito Hadi_CV.pdf" download>
                 Download CV <Download className="ml-2 h-4 w-4" />
               </a>
             </Button>
@@ -117,7 +117,7 @@ export default function Hero() {
             <div className="absolute inset-0 rounded-full bg-accent/10 blur-3xl opacity-20"></div>
             <div className="absolute inset-0 rounded-full border border-accent/20"></div>
             <img
-              src="/profile.png"
+              src="/profile.jpg"
               alt="Rizky Alfito Hadi"
               className="rounded-full object-cover border-4 border-accent/10 shadow-xl"
             />
