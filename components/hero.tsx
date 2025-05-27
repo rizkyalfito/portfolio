@@ -75,7 +75,7 @@ export default function Hero() {
           <div className="flex flex-wrap gap-3 mt-2">
             <Button asChild className="bg-accent hover:bg-accent/90 text-accent-foreground">
               <Link href="#contact">
-                Contact Me <ArrowRight className="ml-2 h-4 w-4" />
+                Contact Me  <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
             <Button variant="outline" asChild className="animated-border">
